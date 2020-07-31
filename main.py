@@ -12,7 +12,7 @@ client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
 app = Quart(__name__)
 
 
-def bot()
+def bot():
     client.run('NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk')
 
 
