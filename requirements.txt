@@ -1,4 +1,4 @@
 discord.py
-Quart
+flask
 asyncio
 peewee
