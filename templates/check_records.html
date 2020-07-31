@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Check Records{% endblock %}
+{% block content %}
+    <h1 class="title">Records Time!</h1>
+    <p class="description">Let's get rid of those monster records!</p>
+    <table>
+        <tr style="color: black;">
+            <th>User</th>
+            <th>Command Type</th>
+            <th>Action</th>
+            <th>Command</th>
+            <th>Time Performed</th>
+        </tr>
+
+        {% for c in cmds %}
+            <th>{{ c.user_id }}</th>
+            <th>{{ c.command_type }}</th>
+            <th>{{ c.action }}</th>
+            <th>{{ c.command }}</th>
+            <th>{{ c.time }}</th>
+        {% endfor %}
+
+    </table>
+{% endblock %}
+{% block outbody %}
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        tr:nth-child(even){background-color: #f2f2f2;}
+
+        tr:hover {background-color: #ddd;}
+
+        th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: rgba(218,165,255,0.87);
+            color: white;
+        }
+    </style>
+{% endblock %}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ydna!{% block title %}{% endblock %}</title>
+</head>
+<body>
+
+    <div class="top-bar" id="top-bar">
+        <a href="{{ url_for('index') }}" style="float:left">Ydna Bot</a>
+        <a href="{{ url_for('check_records') }}">Check Records</a>
+    </div>
+
+    {% block content %}{% endblock %}
+
+</body>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Play&display=swap');
+
+    body {
+        font-family: 'Play', sans-serif;
+    }
+    .top-bar {
+        background-color: rgba(150,157,255,0.87);
+        overflow: hidden;
+    }
+
+    .top-bar a {
+        float: right;
+        text-align: center;
+        padding: 14px 16px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    .top-bar a:hover {
+        background-color: rgba(56,78,255,0.87);
+        color: white;
+    }
+    .title {
+        padding-left: 20px;
+        background: #575b60;
+        color: white;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+
+    .description {
+        background-color: rgba(255,129,28,0.87);
+        color: black;
+        margin: 0;
+        line-height: 200%;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        padding-left: 20px;
+        font-size: 19px;
+    }
+</style>
+{% block outbody %}{% endblock %}
+</html>
