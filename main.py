@@ -12,8 +12,23 @@ client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
 app = Quart(__name__)
 
 
-def bot():
-    client.run('NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk')
+async def start():
+    await client.start("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
+
+
+def run_it_forever(loop):
+    loop.run_forever()
+
+
+def init():
+    asyncio.get_child_watcher() # I still don't know if I need this method. It works without it.
+
+    loop = asyncio.get_event_loop()
+    loop.create_task(start())
+    loop.create_task(website())
+
+    threading.Thread(target=run_it_forever, args=(loop,))
+    thread.start()
 
 
 def website():
