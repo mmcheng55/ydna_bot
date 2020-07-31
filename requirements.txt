@@ -1,6 +1,7 @@
 discord.py
 flask
 asyncio
+peewee
+gunicorn
 PyNaCl==1.3.0
 dnspython==1.16.0
-peewee
