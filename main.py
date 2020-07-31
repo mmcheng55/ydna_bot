@@ -8,7 +8,7 @@ import threading
 
 
 client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
-app = Quart("__main__")
+app = Quart(__name__)
 
 
 def bot():
