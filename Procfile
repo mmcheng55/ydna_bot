@@ -1,2 +1,2 @@
 worker: python main.py
-web: gunicorn main:app
+web: gunicorn --worker-class quart.worker.GunicornWorker main_loop:app
