@@ -1,5 +1,5 @@
 from discord.ext import commands
-from discord.ext.commands import Bot
+from discord import Client
 from models import *
 from flask import Flask, render_template
 import datetime
@@ -7,7 +7,7 @@ import discord
 import threading
 
 
-client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
+client = Client(command_prefix=commands.when_mentioned_or("ydna!"))
 app = Flask(__name__)
 
 
