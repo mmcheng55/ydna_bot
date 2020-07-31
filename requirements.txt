@@ -1,6 +1,7 @@
 discord.py
 Quart
 asyncio
+fcntl
 peewee
 gunicorn
 fcntl
