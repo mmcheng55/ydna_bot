@@ -4,6 +4,5 @@ asyncio
 fcntl
 peewee
 gunicorn
-fcntl
 PyNaCl==1.3.0
 dnspython==1.16.0
