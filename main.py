@@ -1,43 +1,33 @@
 from discord.ext import commands
 from discord.ext.commands import Bot
 from models import *
-from quart import Quart, render_template
+from flask import Flask, render_template
+from threading import Thread
 import asyncio
 import datetime
 import discord
-import threading
 
 
-client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
-app = Quart(__name__)
+loop = asyncio.get_event_loop()
+client = Bot(command_prefix=commands.when_mentioned_or("ydna!"), loop=loop)
+app = Flask(__name__)
 
 
-async def start():
-    await client.start("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
+def b():
+    client.run("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
 
 
-def run_it_forever(loop):
-    loop.run_forever()
-
-
-def init():
-    asyncio.get_child_watcher() # I still don't know if I need this method. It works without it.
-
-    loop = asyncio.get_event_loop()
-    loop.create_task(start())
-    loop.create_task(website())
-
-    threading.Thread(target=run_it_forever, args=(loop,))
-    thread.start()
-
-
-def website():
+def w():
     app.run()
-
 
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}.")
+
+
+@client.command()
+async def test(ctx):
+    await ctx.send("I AM HERE! WHO CALLED ME?")
 
 
 @client.command()
@@ -57,6 +47,7 @@ async def delete_role(ctx, role: discord.Role):
         await ctx.send("Role Successfully deleted. ( Role ID: %d | Role Name: %s )" % (role.id, role.name))
     else:
         await ctx.send("Delete Procedure Failed.")
+
 
 @client.command()
 async def get_role(ctx, role: discord.Role, *, reason=""):
@@ -130,20 +121,21 @@ async def on_reaction_add(reaction, user):
             VotingForRoles.delete().where(VotingForRoles.msg_id == q.msg_id).execute()
 
 
-# Flask Section
+# Quart Section
 @app.route("/")
-async def index():
-    return await render_template("index.html")
+def index():
+    return render_template("index.html")
 
 
 @app.route("/check-records")
-async def check_records():
+def check_records():
     print(find_query(CommandRecords, CommandRecords.id > -1))
-    return await render_template("check_records.html", cmds=find_query(CommandRecords, CommandRecords.id > -1))
+    return render_template("check_records.html", cmds=find_query(CommandRecords, CommandRecords.id > -1))
 
 
-if __name__ == "__main__":
-    b = threading.Thread(target=bot)
-    # w = threading.Thread(target=website)
-    b.start()
-    # w.start()
+if __name__ == '__main__':
+    Thread(target=w).start()
+    Thread(target=b).start()
+    # loop.create_task(b())
+    # loop.create_task(w())
+    # loop.run_forever()
