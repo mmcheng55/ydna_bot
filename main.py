@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 
 def bot():
-    client.run("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
+    client.start("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
 
 def website():
     app.run(host="127.0.0.1", port=8000)
@@ -126,5 +126,7 @@ def check_records():
 
 
 if __name__ == "__main__":
-    threading.Thread(target=bot).start()
-    threading.Thread(target=website).start()
+    b = threading.Thread(target=bot)
+    w = threading.Thread(target=website)
+    b.start()
+    w.start()
