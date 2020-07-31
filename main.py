@@ -1,21 +1,21 @@
 from discord.ext import commands
-from discord import Client
+from discord.ext.commands import Bot
 from models import *
-from flask import Flask, render_template
+from quart import Quart, render_template
 import datetime
 import discord
 import threading
 
 
-client = Client(command_prefix=commands.when_mentioned_or("ydna!"))
-app = Flask(__name__)
+client = Bot(command_prefix=commands.when_mentioned_or("ydna!"))
+app = Quart("__main__")
 
 
 def bot():
     client.start("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
 
 def website():
-    app.run(host="127.0.0.1", port=8000)
+    app.run()
 
 
 @client.event
@@ -34,7 +34,7 @@ async def c_role(ctx, role: discord.Role):
 
 
 @client.command()
-async def delete_role(ctx, role:discord.Role):
+async def delete_role(ctx, role: discord.Role):
     if find_query(RolesCanBeAdded, RolesCanBeAdded.id_ == role.id) and 736463134474109002 in [y.id for y in ctx.message.author.roles]:
         RolesCanBeAdded.delete().where(RolesCanBeAdded.id_ == role.id).execute()
         await ctx.send("Role Successfully deleted. ( Role ID: %d | Role Name: %s )" % (role.id, role.name))
@@ -115,18 +115,18 @@ async def on_reaction_add(reaction, user):
 
 # Flask Section
 @app.route("/")
-def index():
-    return render_template("index.html")
+async def index():
+    return await render_template("index.html")
 
 
 @app.route("/check-records")
-def check_records():
+async def check_records():
     print(find_query(CommandRecords, CommandRecords.id > -1))
-    return render_template("check_records.html", cmds=find_query(CommandRecords, CommandRecords.id > -1))
+    return await render_template("check_records.html", cmds=find_query(CommandRecords, CommandRecords.id > -1))
 
 
 if __name__ == "__main__":
     b = threading.Thread(target=bot)
-    w = threading.Thread(target=website)
+    # w = threading.Thread(target=website)
     b.start()
-    w.start()
+    # w.start()
