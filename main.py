@@ -12,7 +12,9 @@ app = Quart(__name__)
 
 
 def bot():
-    client.start("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(client.start('NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk'))
+
 
 def website():
     app.run()
