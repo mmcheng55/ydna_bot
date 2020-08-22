@@ -248,7 +248,7 @@ async def suggestions():
 async def submissions(item):
     if list(request.args)[0] == "admin_reg":
         print("entered {}".format(item))
-        if (await request.form).get("key") == "cTWMDcnfivUdPbqwhmbkuWE2MDZCUG03ihGYbqG5DwKtl":
+        if (await request.form).get("key") == data["ADMIN_KEY"]:
             with sqlite3.connect("main.db") as conn:
                 c = conn.cursor()
                 c.execute(f"UPDATE users SET admin = 1 WHERE user_id={dc.fetch_user().id}")
