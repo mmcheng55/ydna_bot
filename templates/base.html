@@ -2,13 +2,25 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://kit.fontawesome.com/24690732c6.js" crossorigin="anonymous"></script>
     <title>Ydna!{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </head>
 <body>
 
     <div class="top-bar" id="top-bar">
         <a href="{{ url_for('index') }}" style="float:left">Ydna Bot</a>
-        <a href="{{ url_for('check_records') }}">Check Records</a>
+        {% if check_user() %}
+            <a href="{{ url_for('panel') }}">Control Panel</a>
+        {% else %}
+            <a href="{{ url_for('account', item='login') }}">Accounts</a>
+        {% endif %}
+        <a href="{{ url_for('suggestions') }}">Suggestions</a>
+        <a href="{{ url_for('commands') }}">Commands</a>
     </div>
 
     {% block content %}{% endblock %}
@@ -16,17 +28,19 @@
 </body>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Play&display=swap');
+    @import url('https://fonts.googleapis.com/css?family=Josefin+Sans&display=swap');
 
-    body {
-        font-family: 'Play', sans-serif;
+    * {
+        font-family: 'Josefin Sans', sans-serif;
     }
     .top-bar {
-        background-color: rgba(150,157,255,0.87);
+        background-color: black;
         overflow: hidden;
+        border-bottom: 3px solid white;
     }
 
     .top-bar a {
+        color: white;
         float: right;
         text-align: center;
         padding: 14px 16px;
@@ -35,9 +49,11 @@
     }
 
     .top-bar a:hover {
-        background-color: rgba(56,78,255,0.87);
+        background-color: gray;
         color: white;
+        border-bottom: 4px solid white;
     }
+
     .title {
         padding-left: 20px;
         background: #575b60;
@@ -57,6 +73,22 @@
         padding-bottom: 10px;
         padding-left: 20px;
         font-size: 19px;
+    }
+
+    .input {
+        border: none;
+        border-bottom: 2px solid gray;
+        padding-top: 10px;
+        padding-bottom: 5px;
+        outline: none;
+        width: 250px;
+        padding-left: 20px;
+        font-size: 18px;
+        transition: width .35s ease-in-out;
+    }
+    .input:focus {
+        width: 300px;
+        border-bottom: 2px solid blue;
     }
 </style>
 {% block outbody %}{% endblock %}

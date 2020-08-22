@@ -1,0 +1,21 @@
+{% extends "accounts/panel/base.html" %}
+{% block c %}
+    <h1 class="title">Get Roles</h1>
+    <p class="description">Get a role here!</p>
+    <form style="text-align: center;" action="{{ url_for('submissions', item='get_role') }}" method="post">
+        <div class="col-auto my-1">
+            <label class="my-1 mr-2" for="r">Roles:</label>
+            <select id="r" class="custom-select my-1 mr-sm-2" name="role">
+                {% for r in roles %}
+                    <option value="{{ r[0] }}">{{ r[1] }}</option>
+                {% endfor %}
+            </select>
+        </div><br>
+        <textarea class="input" placeholder="Reason 原因" name="reason"></textarea><br>
+        <button class="btn btn-primary my-1">Submit</button>
+    </form>
+{% endblock %}
+{% block o %}
+    <style>
+    </style>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "accounts/panel/base.html" %}
+{% block c %}
+    <h1 class="title">Admin Registration</h1>
+    <p class="description">You should have a key or something?</p>
+    <form method="POST" action="{{ url_for('submissions', item='admin_reg') }}" style="text-align: center;">
+        <input name="key" class="input" placeholder="Key"><br>
+        <button>Submit</button>
+    </form>
+{% endblock %}

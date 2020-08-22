@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Suggestion{% endblock %}
+{% block content %}
+    <h1 class="title">Suggestions</h1>
+    <p class="description">
+        What can we add in Discord Bot or Website?<br>
+        What can we improve in anything?<br>
+        Just feel free to tell us!
+    </p>
+    <form method="post" style="text-align: center;">
+        <textarea name="suggestions" class="input" style="resize: none; overflow: auto;" placeholder="Suggestions" required></textarea><br>
+        <input type="text" name="user" class="input" style="margin-bottom: 10px;" placeholder="Discord Username" required><br>
+        <select name="type">
+            <option value="Ydna Bot">Ydna Bot</option>
+            <option value="Website">Website</option>
+            <option value="Discord Server">Discord Server</option>
+            <option value="Other">Other</option>
+        </select><br>
+        <button style="background: none; margin-top: 15px; border: 1px solid black; outline: none; padding: 5px; padding-left: 10px; padding-right: 10px;" class="btn">Submit</button>
+
+    </form>
+{% endblock %}
+{% block outbody %}
+    <style>
+    </style>
+{% endblock %}

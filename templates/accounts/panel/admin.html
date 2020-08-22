@@ -1,0 +1,15 @@
+{% extends "accounts/panel/base.html" %}
+{% block c %}
+    <h1 class="title">Admin Login</h1>
+    <form action="{{ url_for('suggestions', item='admin_login') }}" method="post" style="text-align: center;">
+        <input class="button" type="button" value="Submit">
+    </form>
+{% endblock %}
+{% block o %}
+    <style>
+        .button {
+            margin-top: 10px;
+            font-size: 16px;
+        }
+    </style>
+{% endblock %}

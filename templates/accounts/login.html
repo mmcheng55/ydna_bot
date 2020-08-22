@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="title">Login</h1>
+    <p class="description">Mysterious Portal!</p>
+    <h1>To verify that you are one part of Funny Home. You must login with Discord.</h1>
+    <p style="text-align: center;">
+        <button class="btn">
+            <a href="{{ url_for('login') }}" class="a">SIGN IN WITH DISCORD</a>
+        </button>
+    </p>
+{% endblock %}
+{% block outbody %}
+    <style>
+        .btn {
+            padding: 20px 15px;
+            background: rgba(31,31,25,0.87);
+            border: 3px solid white;
+            border-radius: 10px;
+            transition: 0.5s ease-out;
+            color: white;
+        }
+        .btn:hover {
+            background: rgba(90,86,94,0.87);
+            color: black;
+        }
+        .a {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+{% endblock %}

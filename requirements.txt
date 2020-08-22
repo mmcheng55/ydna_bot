@@ -1,5 +1,0 @@
-discord.py
-flask
-asyncio
-peewee
-gunicorn
