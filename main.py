@@ -315,4 +315,4 @@ client.add_cog(Role(client))
 print("http://ydna.themichael-cheng.com")
 # Asyncio Running.
 app.run(host=gethostbyname(gethostname()), port=80, use_reloader=False, debug=True, loop=loop, start_now=False)
-client.run("NzM2OTA5MTQyMDM1Mzk4Njk5.Xx1qHg.ZPo70qNxcYD3n0667UEvY1G__qk")
+client.run(data["DISCORD_BOT_TOKEN"])
