@@ -21,7 +21,7 @@ client = Bot(command_prefix=commands.when_mentioned_or("ydna!"), loop=loop)
 render = render_template
 # c = sqlite3.connect()
 
-with open(r"secured/info.json") as data:
+with open(r"secured/info.json", encoding="utf8") as data:
     data = json.load(data)
 
 
