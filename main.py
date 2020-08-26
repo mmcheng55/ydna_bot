@@ -7,11 +7,11 @@ from socket import gethostbyname, gethostname
 from discord.ext.commands import Bot, Cog
 from discord.ext import commands
 from discord.utils import get
-from threading import Thread
 import flask_discord
 import asyncio
 import sqlite3
 import discord
+import random
 import Embeds
 import json
 import os
@@ -25,7 +25,7 @@ with open(r"secured/info.json", encoding="utf8") as data:
     data = json.load(data)
 
 
-with sqlite3.connect("main.db") as conn:
+with sqlite3.connect("secured/main.db") as conn:
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER, admin BOOLEAN)")
 
@@ -51,7 +51,7 @@ class Role(Cog):
 
     def __init__(self, client):
         self.client = client
-        self.conn = sqlite3.connect("main.db", check_same_thread=False)
+        self.conn = sqlite3.connect("secured/main.db", check_same_thread=False)
         self.c = self.conn.cursor()
 
         self.c.execute("CREATE TABLE IF NOT EXISTS roles (role_id INTEGER, msg_id INTEGER, user_id INTEGER)")
@@ -147,6 +147,15 @@ async def join(ctx):
     await ctx.author.voice.channel.connect()
 
 
+@client.command()
+async def split(ctx, item: int):
+    users = (await client.fetch_channel(739791934180294696)).members
+    random.shuffle(users)
+
+    for i in range(item):
+        pass
+
+
 # Quart
 @app.route("/")
 async def index():
@@ -175,7 +184,7 @@ async def callback():
 
     g = await client.fetch_guild(678630845178839051)
 
-    with sqlite3.connect("main.db") as conn:
+    with sqlite3.connect("secured/main.db") as conn:
         c = conn.cursor()
         if not c.execute(f"SELECT * FROM users WHERE user_id={dc.fetch_user().id}").fetchall():
             c.execute(f"INSERT INTO users (user_id, admin) VALUES (?,?)", (dc.fetch_user().id, 0,))
@@ -196,7 +205,7 @@ async def panels(item):
         abort(404)
     i = {}
     if item == "roles":
-        with sqlite3.connect("main.db") as conn:
+        with sqlite3.connect("secured/main.db") as conn:
             c = conn.cursor()
             i = {"roles": c.execute("SELECT * FROM roles_adding").fetchall()}
 
@@ -206,7 +215,7 @@ async def panels(item):
 @app.route("/admins/<item>")
 @requires_authorization
 async def admins(item):
-    with sqlite3.connect("main.db") as conn:
+    with sqlite3.connect("secured/main.db") as conn:
         c = conn.cursor()
         r = c.execute(f"SELECT * FROM users WHERE user_id={dc.fetch_user().id}").fetchone()
 
@@ -217,7 +226,7 @@ async def admins(item):
     if not item in ["roles"]: abort(404)
 
     if item == "roles":
-        with sqlite3.connect("main.db") as conn:
+        with sqlite3.connect("secured/main.db") as conn:
             c = conn.cursor()
             c.execute("SELECT * FROM users")
 
@@ -238,7 +247,7 @@ async def commands():
 @requires_authorization
 async def suggestions():
     if request.method == "POST":
-        with sqlite3.connect("main.db") as db:
+        with sqlite3.connect("secured/main.db") as db:
             suggestion = request.form.get("suggestions")
 
     return await render("suggestion/suggestions.html")
@@ -249,7 +258,7 @@ async def submissions(item):
     if list(request.args)[0] == "admin_reg":
         print("entered {}".format(item))
         if (await request.form).get("key") == data["ADMIN_KEY"]:
-            with sqlite3.connect("main.db") as conn:
+            with sqlite3.connect("secured/main.db") as conn:
                 c = conn.cursor()
                 c.execute(f"UPDATE users SET admin = 1 WHERE user_id={dc.fetch_user().id}")
                 conn.commit()
@@ -267,7 +276,7 @@ async def submissions(item):
 
         if r.id in [roles.id for roles in (await g.fetch_member(u.id)).roles]: return redirect(url_for('errors', e="already_own_role"))
 
-        with sqlite3.connect("main.db") as conn:
+        with sqlite3.connect("secured/main.db") as conn:
             c = conn.cursor()
 
             msg = await channel.send(embed=Embeds.Embeds.web_role(reason=(await request.form).get("reason"), member=await g.fetch_member(u.id), role=r))
@@ -313,6 +322,7 @@ def check_user():
 app.jinja_env.globals.update(check_user=check_user)
 client.add_cog(Role(client))
 print("http://ydna.themichael-cheng.com")
+
 # Asyncio Running.
 app.run(host=gethostbyname(gethostname()), port=80, use_reloader=False, debug=True, loop=loop, start_now=False)
 client.run(data["DISCORD_BOT_TOKEN"])
