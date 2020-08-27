@@ -25,3 +25,34 @@ class Embeds:
         embed.set_footer(text="在Discord上申請 Requested on Discord")
 
         return embed
+
+    @staticmethod
+    def user_info(user, exp, lvl, balance):
+        embed = discord.Embed(title="User Info 使用者資訊", color=discord.Color.blue())
+        embed.add_field(name="Level 等級", value=f"Lv. {lvl} ({exp})")
+        embed.set_author(name=f"User 用戶 {user.nick if user.nick is not None else user.nick}", icon_url=user.avatar_url)
+
+        return embed
+
+    @staticmethod
+    def how():
+        embed = discord.Embed(title="How this system works? 這套系統如何運作?", color=discord.Color.blurple())
+
+        embed.add_field(name="Level System", value="Ranking System:\n"
+                                                   "It will add experience when you type a message\n"
+                                                   "1-10 New Comer 新人\n"
+                                                   "11-20 Starter 初始者\n"
+                                                   "21-45 Advanced 進階\n"
+                                                   "46-100 Professional 專業\n"
+                                                   "101 - * Expert 老手", inline=False)
+
+        embed.add_field(name="Job System", value="Job System:\n"
+                                                 "You can consider it as a booster.\n"
+                                                 "You can earn money by a job\n"
+                                                 "And also, you can boost up experience.\n", inline=False)
+
+        embed.add_field(name="Bank System", value="Bank System:\n"
+                                                  "You can use money to buy item for customizing your profile.\n"
+                                                  "Earn by job and rewards.", inline=False)
+
+        return embed

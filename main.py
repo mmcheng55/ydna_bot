@@ -11,13 +11,14 @@ import flask_discord
 import asyncio
 import sqlite3
 import discord
-import random
 import Embeds
+import random
 import json
+import City
 import os
 
 loop = asyncio.get_event_loop()
-client = Bot(command_prefix=commands.when_mentioned_or("ydna!"), loop=loop)
+client = Bot(command_prefix=commands.when_mentioned_or("ydna!", "city!"), loop=loop)
 render = render_template
 # c = sqlite3.connect()
 
@@ -321,6 +322,7 @@ def check_user():
 
 app.jinja_env.globals.update(check_user=check_user)
 client.add_cog(Role(client))
+client.add_cog(City.City(client))
 print("http://ydna.themichael-cheng.com")
 
 # Asyncio Running.
