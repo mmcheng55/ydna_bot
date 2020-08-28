@@ -40,8 +40,6 @@ app.config["DISCORD_BOT_TOKEN"] = data["DISCORD_BOT_TOKEN"]
 dc = DiscordOAuth2Session(app)
 
 
-# TODO: Get Role By Website.
-
 @client.event
 async def on_ready():
     print(f"Online as user {client.user}")
