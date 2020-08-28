@@ -54,9 +54,9 @@ class City(Cog):
 
         if q is None: return await ctx.send(f"User Not Found.")
         
-        b = self.c.execute(f"SELECT * FROM bank WHERE user_id={q[0]}")
+        b = self.c.execute(f"SELECT * FROM bank WHERE user_id={q[0]}").fetchone()
 
-        await ctx.send(embed=Embeds.Embeds.user_info(ctx.author, q[2], q[1]))
+        await ctx.send(embed=Embeds.Embeds.user_info(ctx.author, q[2], q[1], b[0]))
     
     @commands.command()
     async def how(self, ctx):

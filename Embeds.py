@@ -29,7 +29,8 @@ class Embeds:
     @staticmethod
     def user_info(user, exp, lvl, balance):
         embed = discord.Embed(title="User Info 使用者資訊", color=discord.Color.blue())
-        embed.add_field(name="Level 等級", value=f"Lv. {lvl} ({exp})")
+        embed.add_field(name="Level 等級", value=f"Lv. {lvl} (Experience: {exp})")
+        embed.add_field(name="Balance ", value=f"${balance}")
         embed.set_author(name=f"User 用戶 {user.nick if user.nick is not None else user.nick}", icon_url=user.avatar_url)
 
         return embed
