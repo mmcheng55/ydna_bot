@@ -56,7 +56,6 @@ class City(Cog):
     @commands.command()
     @city_prefix()
     async def get_info(self, ctx):
-
         q = self.c.execute(f"SELECT * FROM user WHERE user_id={ctx.author.id}").fetchone() if self.c.execute(f"SELECT * FROM user WHERE user_id={ctx.author.id}").fetchall() else None
 
         if q is None: return await ctx.send(f"User Not Found.")
