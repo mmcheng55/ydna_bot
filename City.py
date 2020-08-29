@@ -70,14 +70,21 @@ class City(Cog):
 
         await ctx.send(embed=Embeds.Embeds.how())
 
-    @Cog.listener()
+    @commands.command()
+    @city_prefix()
+    async def get_job(self, ctx):
+        pass
+
+    @Cog.listener("on_message")
     async def on_message(self, message):
         print(message.author.id)
 
         q = list(self.c.execute(f"SELECT * FROM user WHERE user_id={message.author.id}").fetchone())
         m = list(self.c.execute(f"SELECT * FROM job WHERE user_id={message.author.id}").fetchone())
+        b = list(self.c.execute(f"SELECT * FROM bank WHERE user_id={message.author.id}").fetchone())
 
         q = await self.check_level(message, q, m)
 
         self.c.execute(f"UPDATE user SET level={q[1]}, exp={q[2]} WHERE user_id={q[0]}")
+        self.c.execute(f"UPDATE bank SET balance={b[0] + 0.1 } WHERE user_id={b[1]}")
         self.conn.commit()
