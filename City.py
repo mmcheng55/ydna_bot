@@ -12,6 +12,12 @@ import Objs
 # TODO: Job System
 # TODO: Admin Award System
 
+def city_prefix():
+    async def decorator(ctx):
+        return ctx.prefix == "city!"
+
+    return commands.check(decorator)
+
 
 class City(Cog):
     def __init__(self, client):
@@ -24,14 +30,10 @@ class City(Cog):
         self.c.execute("CREATE TABLE IF NOT EXISTS bank (balance integer, user_id integer, FOREIGN KEY(user_id) REFERENCES user(user_id))")
         self.c.execute("CREATE TABLE IF NOT EXISTS job (user_id integer, job text, multiplier integer, FOREIGN KEY(user_id) REFERENCES user(user_id))")
 
-    def check_prefix(self, ctx):
-        if ctx.prefix != "city!":
-            raise commands.errors.CommandNotFound(f"Command Not Found.")
-
-    async def check_level(self, ctx, q: list):
-        q[2] += 1
+    async def check_level(self, ctx, q: list, m: list):
+        q[2] += m[2]
         if Objs.level(q[1], q[2]):
-            await ctx.send("Level up! You are now {}".format(q[1] + 1))
+            await ctx.channel.send(f"Level up! {ctx.author.mention} is now {q[1] + 1}")
             q[2] = 0
             q[1] += 1
             return q
@@ -39,21 +41,21 @@ class City(Cog):
         return q
 
     @commands.command()
-    # @check_prefix
+    @city_prefix()
     async def register(self, ctx):
-        self.check_prefix(ctx)
         if self.c.execute(f"SELECT * FROM user WHERE user_id={ctx.author.id}").fetchall():
             return await ctx.send("You already register to our database!\n"
                                   "Please check out this command `city!get_info`")
 
         self.c.execute(f"INSERT INTO user (user_id, level, exp) VALUES ({ctx.author.id}, 1, 0)")
         self.c.execute(f"INSERT INTO bank (balance, user_id) VALUES (0, {ctx.author.id})")
+        self.c.execute(f"INSERT INTO job (user_id, job, multiplier) VALUES (?,?,?)", (ctx.author.id, "None", 1))
         self.conn.commit()
         await ctx.send("Registered to our database! Please type `city!get_info` to look for more!")
 
     @commands.command()
+    @city_prefix()
     async def get_info(self, ctx):
-        self.check_prefix(ctx)
 
         q = self.c.execute(f"SELECT * FROM user WHERE user_id={ctx.author.id}").fetchone() if self.c.execute(f"SELECT * FROM user WHERE user_id={ctx.author.id}").fetchall() else None
 
@@ -64,8 +66,8 @@ class City(Cog):
         await ctx.send(embed=Embeds.Embeds.user_info(ctx.author, q[2], q[1], b[0]))
     
     @commands.command()
+    @city_prefix()
     async def how(self, ctx):
-        self.check_prefix(ctx)
 
         await ctx.send(embed=Embeds.Embeds.how())
 
@@ -74,10 +76,9 @@ class City(Cog):
         print(message.author.id)
 
         q = list(self.c.execute(f"SELECT * FROM user WHERE user_id={message.author.id}").fetchone())
+        m = list(self.c.execute(f"SELECT * FROM job WHERE user_id={message.author.id}").fetchone())
 
-        q = await self.check_level(message.channel, q)
-
-        print(q)
+        q = await self.check_level(message, q, m)
 
         self.c.execute(f"UPDATE user SET level={q[1]}, exp={q[2]} WHERE user_id={q[0]}")
         self.conn.commit()
