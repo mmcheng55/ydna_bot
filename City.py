@@ -9,6 +9,10 @@ import Embeds
 import Objs
 
 
+# TODO: Job System
+# TODO: Admin Award System
+
+
 class City(Cog):
     def __init__(self, client):
         self.client = client
@@ -18,6 +22,7 @@ class City(Cog):
 
         self.c.execute("CREATE TABLE IF NOT EXISTS user (user_id integer, level integer, exp integer)")
         self.c.execute("CREATE TABLE IF NOT EXISTS bank (balance integer, user_id integer, FOREIGN KEY(user_id) REFERENCES user(user_id))")
+        self.c.execute("CREATE TABLE IF NOT EXISTS job (user_id integer, job text, multiplier integer, FOREIGN KEY(user_id) REFERENCES user(user_id))")
 
     def check_prefix(self, ctx):
         if ctx.prefix != "city!":
@@ -66,6 +71,8 @@ class City(Cog):
 
     @Cog.listener()
     async def on_message(self, message):
+        print(message.author.id)
+
         q = list(self.c.execute(f"SELECT * FROM user WHERE user_id={message.author.id}").fetchone())
 
         q = await self.check_level(message.channel, q)
