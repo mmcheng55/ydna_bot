@@ -5,6 +5,7 @@ from discord.ext import commands
 import functools
 import discord
 import sqlite3
+import decimal
 import Embeds
 import Objs
 
@@ -86,5 +87,5 @@ class City(Cog):
         q = await self.check_level(message, q, m)
 
         self.c.execute(f"UPDATE user SET level={q[1]}, exp={q[2]} WHERE user_id={q[0]}")
-        self.c.execute(f"UPDATE bank SET balance={b[0] + 0.1 } WHERE user_id={b[1]}")
+        self.c.execute(f"UPDATE bank SET balance={float(decimal.Decimal(str(b[0])) + decimal.Decimal('.1'))} WHERE user_id={b[1]}")
         self.conn.commit()
