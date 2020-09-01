@@ -4,7 +4,7 @@ import quart.flask_patch
 from quart import Quart, abort, render_template, request, redirect, url_for
 from flask_discord import DiscordOAuth2Session, requires_authorization
 from socket import gethostbyname, gethostname
-from discord.ext.commands import Bot, Cog
+from discord.ext.commands import Bot
 from discord.ext import commands
 from discord.utils import get
 import flask_discord
@@ -14,11 +14,13 @@ import discord
 import Embeds
 import random
 import json
+import Roles
 import City
+import Osu
 import os
 
 loop = asyncio.get_event_loop()
-client = Bot(command_prefix=commands.when_mentioned_or("ydna!", "city!"), loop=loop)
+client = Bot(command_prefix=commands.when_mentioned_or("ydna!", "city!", "osu!"), loop=loop)
 render = render_template
 # c = sqlite3.connect()
 
@@ -29,6 +31,14 @@ with open(r"secured/info.json", encoding="utf8") as data:
 with sqlite3.connect("secured/main.db") as conn:
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS users (user_id INTEGER, admin BOOLEAN)")
+
+
+def ydna_prefix():
+    async def decorator(ctx):
+        return ctx.prefix == "ydna!"
+
+    return commands.check(decorator)
+
 
 # Quart Settings
 app = Quart(__name__)
@@ -45,94 +55,8 @@ async def on_ready():
     print(f"Online as user {client.user}")
 
 
-class Role(Cog):
-    __doc__ = ["client", "conn", "c"]
-
-    def __init__(self, client):
-        self.client = client
-        self.conn = sqlite3.connect("secured/main.db", check_same_thread=False)
-        self.c = self.conn.cursor()
-
-        self.c.execute("CREATE TABLE IF NOT EXISTS roles (role_id INTEGER, msg_id INTEGER, user_id INTEGER)")
-        self.c.execute("CREATE TABLE IF NOT EXISTS roles_adding (role_id INTEGER, role_name STRING)")
-
-    def check_admin(self, user: discord.Member):
-        if 736463134474109002 in [u.id for u in user.roles]:
-            return True
-        return False
-
-    @commands.command()
-    async def create_role(self, ctx, role: discord.Role):
-        if self.check_admin(ctx.author) and not self.c.execute(
-                f"SELECT * FROM roles_adding WHERE role_id={role.id}").fetchall():
-            self.c.execute(f"INSERT INTO roles_adding (role_id, role_name) VALUES (?,?)", (role.id, role.name,))
-            self.conn.commit()
-            await ctx.send("Role Added Successfully!")
-            return
-
-        await ctx.send("Role Was Not Added Successfully.")
-
-    @commands.command()
-    async def delete_role(self, ctx, role: discord.Role):
-        if self.check_admin(ctx.author):
-            self.c.execute(f"DELETE FROM roles_adding WHERE role_id={role.id}")
-            print("Deleted role.")
-
-    @commands.command()
-    async def get_role(self, ctx, role: discord.Role, *, reason=None):
-        errors = []
-        if not ctx.message.channel.id == 736469089614168074:
-            errors.append("Wrong channel to send!")
-
-        if role.id in [r.id for r in ctx.message.author.roles]:
-            errors.append("You already own this role!")
-
-        if not self.c.execute(f"SELECT * FROM roles_adding WHERE role_id={role.id}").fetchall():
-            errors.append("You cant get this role!")
-
-        if errors:
-            return await ctx.send(
-                embed=discord.Embed(title="ERROR", description="\n".join(errors), color=discord.Color.red()))
-
-        msg = await ctx.send(embed=Embeds.Embeds.embed(role, ctx, reason))
-        self.c.execute(f"INSERT INTO roles (role_id, msg_id, user_id) VALUES (?,?,?)",
-                       (role.id, msg.id, ctx.message.author.id))
-        self.conn.commit()
-
-    @commands.Cog.listener("on_reaction_add")
-    async def on_reaction_add(self, reaction, user):
-        if self.c.execute(f"SELECT * FROM roles WHERE msg_id={reaction.message.id}").fetchall():
-            q = self.c.execute(f"SELECT * FROM roles WHERE msg_id={reaction.message.id}").fetchall()
-            if reaction.emoji == "\u2B55":  # ⭕
-                embed = reaction.message.embeds[0].copy()
-
-                embed.remove_field(1)
-                embed.color = discord.Color.green()
-                embed.add_field(name="申請狀態　Status", value="批核成功 Approved :white_check_mark:")
-
-                await reaction.message.edit(embed=embed)
-
-                self.c.execute(f"DELETE FROM roles WHERE msg_id={reaction.message.id}")
-                self.conn.commit()
-
-                await reaction.message.guild.get_member(int(q[0][2])).add_roles(
-                    reaction.message.guild.get_role(q[0][0]))
-
-            elif reaction.emoji == "\u274C":  # ❌
-                embed = reaction.message.embeds[0].copy()
-
-                embed.remove_field(1)
-                embed.color = discord.Color.red()
-                embed.add_field(name="申請狀態　Status", value="批核成功 Declined :x:")
-                embed.add_field(name="經手人 Moderator", value=user.mention)
-
-                await reaction.message.edit(embed=embed)
-
-                self.c.execute(f"DELETE FROM roles WHERE msg_id={reaction.message.id}")
-                self.conn.commit()
-
-
 @client.command()
+@ydna_prefix()
 async def wash_call(ctx):
     voice_client = ctx.guild.voice_client
     channel = voice_client.channel
@@ -142,11 +66,13 @@ async def wash_call(ctx):
 
 
 @client.command()
+@ydna_prefix()
 async def join(ctx):
     await ctx.author.voice.channel.connect()
 
 
 @client.command()
+@ydna_prefix()
 async def split(ctx, item: int):
     users = (await client.fetch_channel(739791934180294696)).members
     random.shuffle(users)
@@ -319,8 +245,9 @@ def check_user():
 
 
 app.jinja_env.globals.update(check_user=check_user)
-client.add_cog(Role(client))
+client.add_cog(Roles.Role(client))
 client.add_cog(City.City(client))
+client.add_cog(Osu.Osu(client))
 print("http://ydna.themichael-cheng.com")
 
 # Asyncio Running.

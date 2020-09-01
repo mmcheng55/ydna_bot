@@ -17,8 +17,8 @@ class Embeds:
     @staticmethod
     def embed(role: discord.Role, ctx: discord.ext.commands.Context, reason):
         embed = discord.Embed(title="申請身分組", description=f"Reason 原因: {reason}")
-        embed.add_field(name="身分組　Roles", value=role.mention)
-        embed.add_field(name="申請狀態　Status", value="批核中 Pending :grey_question:")
+        embed.add_field(name="身分組 Roles", value=role.mention)
+        embed.add_field(name="申請狀態 Status", value="批核中 Pending :grey_question:")
         embed.set_author(name="由使用者 {a} 申請 | Requested By {a}".format(
             a=ctx.message.author.nick if ctx.message.author.nick is not None else ctx.message.author.name))
 
